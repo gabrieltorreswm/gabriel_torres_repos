@@ -10,5 +10,5 @@ export class Organization extends BaseEntity{
     name:string
 
     @Column()
-    status:number
+    status:string
 }

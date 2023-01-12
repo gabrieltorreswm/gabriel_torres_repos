@@ -8,13 +8,13 @@ import connectDB from "./../config/orm";
 
 connectDB
 
-import Routes from './routes/index'
-
 const app = express()
 const port = process.env.port || process.env.PORT;
 
-app.use(express.json())
 app.use(cors())
+app.use(express.json())
+
+import Routes from './routes/index'
 
 // endPoint api 
 app.use('/v1', Routes)

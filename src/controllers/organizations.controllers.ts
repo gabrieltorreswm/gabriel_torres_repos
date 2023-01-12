@@ -1,23 +1,45 @@
-import { Router, Request, Response } from "express";
-import connectDB from "../../config/orm";
+import { Router, Request, Response } from "express";=
 import { Organization } from "../entities/Organitazion.entity";
-import { Repository } from "../entities/Repository.entity";
+import { getOrganizationStatus } from "../utils/utils";
 
-connectDB.getRepository(Organization)
-
-const createOrg = (req:Request,res:Response,next:CallableFunction) =>{
+const createOrg = async (req:Request,res:Response,next:CallableFunction) =>{
     
     try {
-        // const repositoyEntity = new Repository()
-        // repositoyEntity.id_tribu = 1
-        // repositoyEntity.name = "node_js"
-        // repositoyEntity.state =
+        console.log('response',req.body)
+        const { name , status } = req.body
+
+        const organization = new Organization()
+        organization.name = name
+        organization.status = getOrganizationStatus(status)
+
+        await organization.save()
+
+        return res.json({
+            status: "ok",
+            message:"The organization has been created"
+        })
     } catch (error) {
-        
+        console.log(error)
+        res.json({
+            status:402,
+            message:"Something went wrong"
+        })
     }
 }
 const editOrg = (req:Request,res:Response,next:CallableFunction) =>{}
-const getOrg = (req:Request,res:Response,next:CallableFunction) =>{}
+const getOrg = async (req:Request,res:Response,next:CallableFunction) =>{
+    try {
+        const allOrganization = await Organization.find()
+        return res.json(allOrganization)
+    } catch (error) {
+        console.log(error)
+        res.json({
+            status:402,
+            message:"Something went wrong"
+        })
+    }
+
+}
 const deleteOrg = (req:Request,res:Response,next:CallableFunction) =>{}
 
 
