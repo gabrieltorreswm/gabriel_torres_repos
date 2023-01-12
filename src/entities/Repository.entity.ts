@@ -1,4 +1,5 @@
-import { Entity , PrimaryGeneratedColumn , Column, BaseEntity, OneToMany, Timestamp, ManyToOne} from "typeorm";
+import { Entity , PrimaryGeneratedColumn , Column, BaseEntity, OneToMany, Timestamp, ManyToOne, OneToOne, JoinColumn} from "typeorm";
+import { Metrics } from "./Metrics.entity";
 import { Tribe } from "./Tribe.entity";
 
 @Entity()
@@ -21,4 +22,8 @@ export class Repository extends BaseEntity{
 
     @Column()
     status:string
+
+    @OneToOne(()=> Metrics)
+    @JoinColumn()
+    metrics:Metrics 
 }

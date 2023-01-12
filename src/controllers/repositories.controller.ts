@@ -24,22 +24,6 @@ const gelAllRepositories = (req:Request,res:Response,next:CallableFunction) =>{
     }
 }
 
-const create = (req:Request,res:Response,next:CallableFunction) =>{
-
-    try {
-        const tribe = Tribe.findOneBy({id:1})
-
-        const repository = new Repository()
-        repository.name = " node repository"
-        repository.status = repositoryState.ENABLE
-        repository.status = repositoryState.DISABLE
-        repository.id_tribu = tribe
-
-    } catch (error) {
-        
-    }
-}
 export {
-    gelAllRepositories,
-    create
+    gelAllRepositories
 }

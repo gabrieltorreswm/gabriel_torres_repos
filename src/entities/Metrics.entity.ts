@@ -1,14 +1,11 @@
-import { Entity , Column, BaseEntity, OneToOne, PrimaryColumn,} from "typeorm";
+import { Entity , Column, BaseEntity, OneToOne, PrimaryGeneratedColumn, JoinColumn,} from "typeorm";
 import { Repository } from "./Repository.entity";
 
 @Entity()
 export class Metrics extends BaseEntity{
 
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     id_repository:number
-
-    @OneToOne(()=> Metrics)
-    metrics:Metrics
 
     @Column()
     coverega:number
@@ -21,5 +18,8 @@ export class Metrics extends BaseEntity{
 
     @Column()
     code_smells:number
+
+    @Column()
+    hotspot: number
 
 }
