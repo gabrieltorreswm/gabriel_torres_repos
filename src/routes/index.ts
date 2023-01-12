@@ -1,18 +1,17 @@
 import { Router, Request, Response } from "express";
+import { createOrg, deleteOrg, editOrg, getOrg } from "../controllers/organizations.controllers";
 import { gelAllRepositories } from "../controllers/repositories.controller";
 
 const router = Router()
 
+// Repositories resources
 router.get('/repositores', gelAllRepositories)
 
-router.get('/v1',( req: Request, res:Response) =>{
-
-    res.send(' I am v1')
-})
-
-// router.post('/repo', async ( req: Request, res:Response) =>{
-//     res.send(' Repo post')
-// })
+//Organization resources
+router.post ('/organizations/',createOrg)
+router.get('/organizations/:id',editOrg)
+router.get('/organizations/',getOrg)
+router.delete('/organizations/:id',deleteOrg)
 
 
 export default router

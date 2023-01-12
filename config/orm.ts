@@ -1,7 +1,5 @@
-import { createConnection } from "net";
-import { join } from "path";
 import "reflect-metadata"
-import { DataSource, createConnections } from "typeorm"
+import { DataSource } from "typeorm"
 
 const connectDB = new DataSource({
     type: "cockroachdb",

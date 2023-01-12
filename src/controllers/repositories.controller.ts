@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import { verificationCode } from "../entities/types";
 
 const gelAllRepositories = (req:Request,res:Response,next:CallableFunction) =>{
 
@@ -6,12 +7,14 @@ const gelAllRepositories = (req:Request,res:Response,next:CallableFunction) =>{
         res.json({
             "repositories": [
                 {
-                "id": 1, "state": 604
-                }, {
-                "id": 2,
-                "state": 605 },
+                    "id": 1, "state": verificationCode.VERIFIED
+                }, 
                 {
-                "id": 3, "state": 606
+                    "id": 2,
+                    "state": verificationCode.PENDING 
+                },
+                {
+                    "id": 3, "state": verificationCode.APPROVED
                 } ]
         })
     } catch (error) {
