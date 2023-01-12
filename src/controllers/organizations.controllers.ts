@@ -1,5 +1,6 @@
-import { Router, Request, Response } from "express";=
+import { Router, Request, Response } from "express";
 import { Organization } from "../entities/Organitazion.entity";
+import { Tribe } from "../entities/Tribe.entity";
 import { getOrganizationStatus } from "../utils/utils";
 
 const createOrg = async (req:Request,res:Response,next:CallableFunction) =>{
@@ -8,9 +9,16 @@ const createOrg = async (req:Request,res:Response,next:CallableFunction) =>{
         console.log('response',req.body)
         const { name , status } = req.body
 
+        const tribe = new Tribe()
+        tribe.name = 'Leones'
+        tribe.status = 1
+
+        await tribe.save()
+
         const organization = new Organization()
         organization.name = name
         organization.status = getOrganizationStatus(status)
+        organization.tribe = [tribe]
 
         await organization.save()
 
@@ -57,7 +65,9 @@ const editOrg = async (req:Request,res:Response,next:CallableFunction) =>{
 }
 const getOrg = async (req:Request,res:Response,next:CallableFunction) =>{
     try {
-        const allOrganization = await Organization.find()
+        const allOrganization = await Organization.find({ relations:{
+            tribe:true
+        }})
         return res.json(allOrganization)
     } catch (error) {
         console.log(error)
