@@ -26,7 +26,35 @@ const createOrg = async (req:Request,res:Response,next:CallableFunction) =>{
         })
     }
 }
-const editOrg = (req:Request,res:Response,next:CallableFunction) =>{}
+
+
+const editOrg = async (req:Request,res:Response,next:CallableFunction) =>{
+    try {
+        const { name } = req.body
+        const { id } = req.params
+
+        const organization = await Organization.findOneBy({
+            id : Number(id)
+        })
+
+        if(!organization?.name)
+            throw new Error("I dont found organization");
+        
+    
+        organization.name = name 
+        await organization.save()
+        
+        return res.json(organization)
+
+    } catch (error) {
+        console.log(error)
+        res.json({
+            status:402,
+            message:"Something went wrong"
+        })
+    }
+
+}
 const getOrg = async (req:Request,res:Response,next:CallableFunction) =>{
     try {
         const allOrganization = await Organization.find()
@@ -40,7 +68,30 @@ const getOrg = async (req:Request,res:Response,next:CallableFunction) =>{
     }
 
 }
-const deleteOrg = (req:Request,res:Response,next:CallableFunction) =>{}
+const deleteOrg = async (req:Request,res:Response,next:CallableFunction) => {
+    try {
+        const { id } = req.params
+
+        const organization = await Organization.findOneBy({
+            id : Number(id)
+        })
+
+        if(!organization)
+            throw new Error("I dont found organization");
+
+        await organization.remove()
+        
+        return res.json(organization)
+
+    } catch (error) {
+        console.log(error)
+        res.json({
+            status:402,
+            message:"Something went wrong"
+        })
+    }
+
+}
 
 
 export {

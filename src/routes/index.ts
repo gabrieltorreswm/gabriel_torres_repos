@@ -10,7 +10,7 @@ router.get('/repositores', gelAllRepositories)
 
 //Organization resources
 router.post ('/organizations/',createOrg)
-router.get('/organizations/:id',editOrg)
+router.post('/organizations/:id',editOrg)
 router.get('/organizations/',getOrg)
 router.delete('/organizations/:id',deleteOrg)
 
