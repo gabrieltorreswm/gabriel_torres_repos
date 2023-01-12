@@ -1,5 +1,6 @@
-import { Entity , PrimaryGeneratedColumn , Column, BaseEntity, OneToMany, OneToOne, ManyToOne} from "typeorm";
+import { Entity , PrimaryGeneratedColumn , Column, BaseEntity, OneToMany, ManyToOne} from "typeorm";
 import { Organization } from "./Organitazion.entity";
+import { Repository } from "./Repository.entity";
 
 @Entity()
 export class Tribe extends BaseEntity{
@@ -15,4 +16,7 @@ export class Tribe extends BaseEntity{
 
     @Column()
     status:number
+
+    @OneToMany(type => Repository, (rep) => rep.id_tribu, { cascade:true })
+    repository:Repository[]
 }

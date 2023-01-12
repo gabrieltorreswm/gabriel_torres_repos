@@ -15,4 +15,5 @@ export class Organization extends BaseEntity{
 
     @OneToMany(type => Tribe, (tribe) => tribe.id_organization, { cascade:true})
     tribe:Tribe[]
+    
 }

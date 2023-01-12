@@ -1,22 +1,33 @@
 import { Router, Request, Response } from "express";
 import { Organization } from "../entities/Organitazion.entity";
+import { Repository } from "../entities/Repository.entity";
 import { Tribe } from "../entities/Tribe.entity";
+import { repositoryState } from "../entities/types";
 import { getOrganizationStatus } from "../utils/utils";
 
 const createOrg = async (req:Request,res:Response,next:CallableFunction) =>{
     
     try {
         console.log('response',req.body)
-        const { name , status } = req.body
+        const { organizationName , status , tribeName , repositoryName} = req.body
+
+        const repository = new Repository()
+        repository.name = repositoryName
+        repository.status = repositoryState.ENABLE
+        repository.state = repositoryState.DISABLE
+        //repository.create_time = new Date()
+
+        console.log(repository)
 
         const tribe = new Tribe()
-        tribe.name = 'Leones'
+        tribe.name = tribeName
         tribe.status = 1
+        tribe.repository = [repository]
 
         await tribe.save()
 
         const organization = new Organization()
-        organization.name = name
+        organization.name = organizationName
         organization.status = getOrganizationStatus(status)
         organization.tribe = [tribe]
 

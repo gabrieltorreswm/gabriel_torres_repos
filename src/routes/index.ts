@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 import { createOrg, deleteOrg, editOrg, getOrg } from "../controllers/organizations.controllers";
-import { gelAllRepositories } from "../controllers/repositories.controller";
+import { create, gelAllRepositories } from "../controllers/repositories.controller";
 import { getInfo } from "../controllers/tribe.controllers";
 
 
@@ -8,6 +8,7 @@ const router = Router()
 
 // Repositories resources
 router.get('/repositores', gelAllRepositories)
+router.post('/repositores', create)
 
 //Organization resources
 router.post ('/organizations/',createOrg)
