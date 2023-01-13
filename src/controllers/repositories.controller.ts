@@ -1,7 +1,9 @@
 import { Router, Request, Response, response } from "express";
+import { RepositoryDTO } from "../entities/dto/repositoryDTO";
 import { Repository } from "../entities/Repository.entity";
 import { Tribe } from "../entities/Tribe.entity";
 import { repositoryState, verificationCode } from "../entities/types";
+import { BuilderRepository } from "../utils/BuilderRepository";
 
 const gelAllRepositories = (req:Request,res:Response,next:CallableFunction) =>{
 
@@ -34,9 +36,11 @@ const getRepositoryByTribe = async (req:Request,res:Response,next:CallableFuncti
         const tribe_organization = await Tribe.createQueryBuilder('tribe')
                                                .leftJoinAndSelect('tribe.id_organization','organization')
                                                .where('tribe.id = :id',{ id:idTribe})
-                                               .getMany()
-        console.log(tribe_organization)
+                                               .getOne()
 
+        if(!tribe_organization)
+            throw new Error("I not found tribe");
+            
         const repository = await Repository
                                 .createQueryBuilder('repository')
                                 .leftJoinAndSelect('repository.metrics','metrics')
@@ -45,10 +49,13 @@ const getRepositoryByTribe = async (req:Request,res:Response,next:CallableFuncti
                                 .where("repository.id_tribu = :id", { id: idTribe} )
                                 .getMany()
 
-        return res.json({ 
-                repository,
-                tribe_organization
-            })
+        
+        
+        const builerRepository = new BuilderRepository(repository,tribe_organization)
+
+
+
+        return res.json(builerRepository.getResponse())
     } catch (error) {
         console.log(error)
         res.json({
