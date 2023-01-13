@@ -9,6 +9,7 @@ export class Repository extends BaseEntity{
     id:number
 
     @ManyToOne(() => Tribe, (trb) => trb.id)
+    @JoinColumn()
     id_tribu:Tribe
 
     @Column()

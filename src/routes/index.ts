@@ -1,7 +1,7 @@
 import { Router, Request, Response } from "express";
 import { createMetrics ,getMetricsByTribe} from "../controllers/metrics.controllers";
 import { createOrg, deleteOrg, editOrg, getOrg } from "../controllers/organizations.controllers";
-import { gelAllRepositories } from "../controllers/repositories.controller";
+import { gelAllRepositories, getRepositoryByTribe } from "../controllers/repositories.controller";
 import { getInfo } from "../controllers/tribe.controllers";
 
 
@@ -9,6 +9,7 @@ const router = Router()
 
 // Repositories resources
 router.get('/repositores', gelAllRepositories)
+router.get('/repositores/:idTribe', getRepositoryByTribe)
 
 //Organization resources
 router.post ('/organizations/',createOrg)

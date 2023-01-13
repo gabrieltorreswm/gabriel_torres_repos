@@ -6,7 +6,7 @@ import { Tribe } from "../entities/Tribe.entity";
 const createMetrics = async (req:Request,res:Response,next:CallableFunction) =>{
 
     try {
-        const { idRepository } = req.body
+        const { idRepository , coverega , bugs , vulnerabilities , code_smells , hotspot} = req.body
 
         const repository = await Repository.findOneBy({id:idRepository})
 
@@ -14,11 +14,11 @@ const createMetrics = async (req:Request,res:Response,next:CallableFunction) =>{
             throw new Error(" I found repository");
             
         const metrics = new Metrics()
-        metrics.coverega = 10
-        metrics.bugs = 20
-        metrics.vulnerabilities = 1
-        metrics.code_smells = 20
-        metrics.hotspot = 1
+        metrics.coverega = coverega
+        metrics.bugs = bugs
+        metrics.vulnerabilities = vulnerabilities
+        metrics.code_smells = code_smells
+        metrics.hotspot = hotspot
 
         await metrics.save()
 
@@ -52,9 +52,10 @@ const getMetricsByTribe = async (req:Request,res:Response,next:CallableFunction)
 
         const repository = await Repository
                                 .createQueryBuilder('repository')
+                                .leftJoinAndSelect('repository.metrics','metrics')
+                                .leftJoinAndSelect('repository.id_tribu','tribe')
                                 .where("repository.id = :id", { id: tribe.id } )
-                                .innerJoinAndSelect('repository.metrics','metrics')
-                                //.select('metrics')
+                                .where("repository.id_tribu = :id", { id: tribe.id } )
                                 .getMany()
 
         return res.json(repository)
