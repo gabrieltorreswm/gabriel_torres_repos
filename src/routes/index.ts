@@ -23,6 +23,7 @@ router.get ('/tribe/:id', getInfo)
 // metrics 
 router.post('/metrics',createMetrics)
 router.get('/metrics/:id',getMetricsByTribe)
+router.get('/metrics/csv/:idTribu',getMetricsByTribe)
 
 
 export default router

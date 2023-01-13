@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import { Metrics } from "../entities/Metrics.entity";
 import { Repository } from "../entities/Repository.entity";
 import { Tribe } from "../entities/Tribe.entity";
+import RepositoryServices from "../services/RepositoriesServices";
 
 const createMetrics = async (req:Request,res:Response,next:CallableFunction) =>{
 
@@ -44,6 +45,36 @@ const getMetricsByTribe = async (req:Request,res:Response,next:CallableFunction)
     try {
         const { id } = req.params
 
+        const repositoryServices = new RepositoryServices()
+        const { isExistTribe, tribe } = await repositoryServices.getTribeById(Number(id))
+        
+        if(!isExistTribe)
+            throw new Error("I dont found tribe");
+        
+
+        const repository = await Repository
+                                .createQueryBuilder('repository')
+                                .leftJoinAndSelect('repository.metrics','metrics')
+                                .leftJoinAndSelect('repository.id_tribu','tribe')
+                                .where("repository.id = :id", { id: tribe?.id } )
+                                .where("repository.id_tribu = :id", { id: tribe?.id } )
+                                .getMany()
+
+        return res.json(repository)
+    } catch (error) {
+        console.log(error)
+        res.json({
+            status:402,
+            message:"Something went wrong"
+        })
+    }
+}
+
+const generateCSV = async (req:Request,res:Response,next:CallableFunction) =>{
+
+    try {
+        const { id } = req.params
+
         const tribe = await Tribe.findOneBy({id: Number(id)})
         
         if(!tribe)
@@ -70,5 +101,6 @@ const getMetricsByTribe = async (req:Request,res:Response,next:CallableFunction)
 
 export {
     createMetrics,
-    getMetricsByTribe
+    getMetricsByTribe,
+    generateCSV
 }

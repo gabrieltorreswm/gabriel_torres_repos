@@ -3,6 +3,7 @@ import { RepositoryDTO } from "../entities/dto/repositoryDTO";
 import { Repository } from "../entities/Repository.entity";
 import { Tribe } from "../entities/Tribe.entity";
 import { repositoryState, verificationCode } from "../entities/types";
+import RepositoryServices from "../services/RepositoriesServices";
 import { BuilderRepository } from "../utils/BuilderRepository";
 
 const gelAllRepositories = (req:Request,res:Response,next:CallableFunction) =>{
@@ -33,29 +34,17 @@ const getRepositoryByTribe = async (req:Request,res:Response,next:CallableFuncti
     try {
         const { idTribe } = req.params
         
-        const tribe_organization = await Tribe.createQueryBuilder('tribe')
-                                               .leftJoinAndSelect('tribe.id_organization','organization')
-                                               .where('tribe.id = :id',{ id:idTribe})
-                                               .getOne()
-
-        if(!tribe_organization)
-            throw new Error("I not found tribe");
+        const repositoryServices = new RepositoryServices()
+        const { isExistTribe, tribe } = await repositoryServices.getTribeById(Number(idTribe))
+        
+        if(!isExistTribe)
+            throw new Error("I dont found tribe");
             
-        const repository = await Repository
-                                .createQueryBuilder('repository')
-                                .leftJoinAndSelect('repository.metrics','metrics')
-                                .leftJoinAndSelect('repository.id_tribu','tribe')
-                                .where("repository.id = :id", { id: idTribe} )
-                                .where("repository.id_tribu = :id", { id: idTribe} )
-                                .getMany()
-
-        
-        
-        const builerRepository = new BuilderRepository(repository,tribe_organization)
-
-
-
+        const repository = await repositoryServices.getRepositoryByTribe(Number(idTribe))
+        const builerRepository = new BuilderRepository(repository,tribe)
         return res.json(builerRepository.getResponse())
+        
+
     } catch (error) {
         console.log(error)
         res.json({

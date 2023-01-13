@@ -7,8 +7,12 @@ export class BuilderRepository{
     repository:Repository[]
     tribe:Tribe
 
-    constructor(repository:Repository[],tribe:Tribe){
+    constructor(repository:Repository[],tribe?:Tribe){
         this.repository = repository
+
+        if(!tribe)
+            throw new Error("It is required tribe");
+            
         this.tribe = tribe
     }
     
