@@ -14,3 +14,7 @@ export enum repositoryStatus {
     ACTIVE = "Active",
     INACTIVE = "Inactive",
 }
+
+export class Mock{
+    isMock:boolean
+}

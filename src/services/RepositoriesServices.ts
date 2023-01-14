@@ -1,5 +1,7 @@
+import { Any } from "typeorm"
 import { Repository } from "../entities/Repository.entity"
 import { Tribe } from "../entities/Tribe.entity"
+import { Mock, verificationCode } from "../entities/types"
 
 
 export default class RepositoryServices {
@@ -29,6 +31,28 @@ export default class RepositoryServices {
                                     .getMany()
 
         return repository                       
+    }
+
+    async getRepository(params:Mock):Promise<any>{
+
+        if(params.isMock){
+            return {
+                "repositories": [
+                    {
+                        "id": 1, "state": verificationCode.VERIFIED
+                    }, 
+                    {
+                        "id": 2,
+                        "state": verificationCode.PENDING 
+                    },
+                    {
+                        "id": 3, "state": verificationCode.APPROVED
+                    } ]
+            }
+        }
+
+        // call the services
+        return {}
     }
     
 }
