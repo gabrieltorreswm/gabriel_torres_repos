@@ -1,10 +1,9 @@
-import { Router, Request, Response, response } from "express";
-import { RepositoryDTO } from "../entities/dto/repositoryDTO";
-import { Repository } from "../entities/Repository.entity";
-import { Tribe } from "../entities/Tribe.entity";
-import { Mock, repositoryState, verificationCode } from "../entities/types";
+import { Request, Response, response } from "express";
+import { Mock} from "../entities/types";
 import RepositoryServices from "../services/RepositoriesServices";
 import { BuilderRepository } from "../utils/BuilderRepository";
+import { ApiError, ERROR } from "../utils/Errors";
+//import { ERROR } from "../utils/Errors";
 
 const gelAllRepositories = async (req:Request,res:Response,next:CallableFunction) =>{
 
@@ -31,7 +30,7 @@ const getRepositoryByTribe = async (req:Request,res:Response,next:CallableFuncti
         const { isExistTribe, tribe } = await repositoryServices.getTribeById(Number(idTribe))
         
         if(!isExistTribe)
-            throw new Error("I dont found tribe");
+            throw new ApiError(ERROR.E001);
             
         const repository = await repositoryServices.getRepositoryByTribe(Number(idTribe))
         const builerRepository = new BuilderRepository(repository,tribe)
@@ -40,9 +39,16 @@ const getRepositoryByTribe = async (req:Request,res:Response,next:CallableFuncti
 
     } catch (error) {
         console.log(error)
+        if(error instanceof ApiError){
+            return res.json( 
+                { 
+                    message: error.getMessage()
+                }
+            )
+        }
         res.json({
-            status:402,
-            message:"Something went wrong"
+            status : 402,
+            message: ERROR.E002
         })
     }
 }

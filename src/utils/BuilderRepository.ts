@@ -1,4 +1,3 @@
-import { response } from "express";
 import { RepositoryDTO } from "../entities/dto/repositoryDTO";
 import { Repository } from "../entities/Repository.entity";
 import { Tribe } from "../entities/Tribe.entity";
@@ -11,7 +10,7 @@ export class BuilderRepository{
         this.repository = repository
 
         if(!tribe)
-            throw new Error("It is required tribe");
+            throw new Error("Tribe is required");
             
         this.tribe = tribe
     }

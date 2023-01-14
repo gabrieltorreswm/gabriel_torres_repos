@@ -3,6 +3,7 @@ import { Metrics } from "../entities/Metrics.entity";
 import { Repository } from "../entities/Repository.entity";
 import { Tribe } from "../entities/Tribe.entity";
 import RepositoryServices from "../services/RepositoriesServices";
+import { ERROR, SUCCESS } from "../utils/Errors";
 
 const createMetrics = async (req:Request,res:Response,next:CallableFunction) =>{
 
@@ -28,14 +29,14 @@ const createMetrics = async (req:Request,res:Response,next:CallableFunction) =>{
 
         return res.json({
             status: "ok",
-            message:"The metrics has been created"
+            message: SUCCESS.E001
         })
 
     } catch (error) {
         console.log(error)
         res.json({
-            status:402,
-            message:"Something went wrong"
+            status: 402,
+            message: ERROR.E002
         })
     }
 }
@@ -49,7 +50,7 @@ const getMetricsByTribe = async (req:Request,res:Response,next:CallableFunction)
         const { isExistTribe, tribe } = await repositoryServices.getTribeById(Number(id))
         
         if(!isExistTribe)
-            throw new Error("I dont found tribe");
+            throw new Error(ERROR.E003);
         
 
         const repository = await Repository
@@ -65,7 +66,7 @@ const getMetricsByTribe = async (req:Request,res:Response,next:CallableFunction)
         console.log(error)
         res.json({
             status:402,
-            message:"Something went wrong"
+            message:ERROR.E002
         })
     }
 }
@@ -94,7 +95,7 @@ const generateCSV = async (req:Request,res:Response,next:CallableFunction) =>{
         console.log(error)
         res.json({
             status:402,
-            message:"Something went wrong"
+            message:ERROR.E002
         })
     }
 }
