@@ -6,14 +6,14 @@ import { Mock, repositoryState, verificationCode } from "../entities/types";
 import RepositoryServices from "../services/RepositoriesServices";
 import { BuilderRepository } from "../utils/BuilderRepository";
 
-const gelAllRepositories = (req:Request,res:Response,next:CallableFunction) =>{
+const gelAllRepositories = async (req:Request,res:Response,next:CallableFunction) =>{
 
     try {
         const repositoryServices = new RepositoryServices()
         const params = new Mock()
         params.isMock = true
 
-        const repositories = repositoryServices.getRepository(params)
+        const repositories = await repositoryServices.getRepository(params)
         res.json(repositories)
     } catch (error) {
         
