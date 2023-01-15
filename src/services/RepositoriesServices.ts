@@ -21,16 +21,15 @@ export default class RepositoryServices {
         return { isExistTribe:true , tribe }
     }
 
-    async getRepositoryByTribe(idTribe:number):Promise<Repository[]>{
-        const repository = await Repository
+    async getRepositoryByTribe(params:RepositoryQuery):Promise<Repository[]>{
+        console.log(params)
+       return await Repository
                                     .createQueryBuilder('repository')
                                     .leftJoinAndSelect('repository.metrics','metrics')
                                     .leftJoinAndSelect('repository.id_tribu','tribe')
-                                    .where("repository.id = :id", { id: idTribe} )
-                                    .where("repository.id_tribu = :id", { id: idTribe} )
-                                    .getMany()
-
-        return repository                       
+                                    .where("repository.id = :id ", { id: params.id } )
+                                    .where("repository.id_tribu = :id AND state = :state  AND metrics.coverega >= :coverage", { id: params.id , state:params.state , coverage:params.coverage} )
+                                    .getMany()                   
     }
 
     async getRepository(params:Mock):Promise<any>{
@@ -54,5 +53,40 @@ export default class RepositoryServices {
         // call the services
         return {}
     }
+
+    async createRepository(params:RepositoryCreate){
+
+        const tribe = await Tribe.findOneBy({id: params.idTribuId})
+
+        console.log(tribe)
+
+        if(!tribe)
+            throw new Error("Not found tribe");
+            
+
+        const repository = new Repository()
+                            repository.name = params.name
+                            repository.state = params.state
+                            repository.status = params.status
+                            repository.id_tribu = tribe
+
+        return await repository.save()
+    }
     
+}
+
+export interface RepositoryQuery {
+    id?:number
+    state?:string
+    coverage?:number
+}
+
+export interface RepositoryCreate{
+    id?:number
+    name:string
+    state:string
+    create_time?:number
+    status:string
+    idTribuId:number
+    metricsIdRepository?:number
 }

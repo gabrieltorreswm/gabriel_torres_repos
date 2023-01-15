@@ -8,7 +8,7 @@ export class Repository extends BaseEntity{
     @PrimaryGeneratedColumn()
     id:number
 
-    @ManyToOne(() => Tribe, (trb) => trb.id)
+    @ManyToOne(() => Tribe, (trb) => trb.id, { nullable:true})
     @JoinColumn()
     id_tribu:Tribe
 

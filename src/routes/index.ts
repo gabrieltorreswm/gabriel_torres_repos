@@ -1,16 +1,18 @@
 import { Router, Request, Response } from "express";
 import { createMetrics ,getMetricsByTribe} from "../controllers/metrics.controllers";
 import { createOrg, deleteOrg, editOrg, getOrg } from "../controllers/organizations.controllers";
-import { gelAllRepositories, getRepositoryByTribe } from "../controllers/repositories.controller";
+import { createRepository, gelAllRepositories, getRepositoryByTribe } from "../controllers/repositories.controller";
 import { getInfo } from "../controllers/tribe.controllers";
+import RepositoryServices from "../services/RepositoriesServices";
 
 
 const router = Router()
+const repositoryServices = new RepositoryServices()
 
 // Repositories resources
-router.get('/repositores', gelAllRepositories)
-router.get('/repositores/:idTribe', getRepositoryByTribe)
-
+router.get('/repositores', (req,res)=> gelAllRepositories(req,res,repositoryServices))
+router.get('/repositores/:idTribe', (req,res) => getRepositoryByTribe(req,res,repositoryServices))
+router.post('/repositores',(req,res) =>createRepository(req,res,repositoryServices))
 //Organization resources
 router.post ('/organizations/',createOrg)
 //router.post('/organizations/:id',editOrg)
