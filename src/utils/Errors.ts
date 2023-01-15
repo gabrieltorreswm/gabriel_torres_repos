@@ -1,7 +1,8 @@
 export enum ERROR{
-    E001 = "La Tribu no se encuentra registrada",
+    E001 = "La Tribu no se encuentra registrada.",
     E002 = "Something went wrong",
-    E003 = "Not Found"
+    E003 = "Not Found",
+    E004 = "La tribu no tiene repositorios que cumplan con la cobertura necesaria."
 }
 
 export enum SUCCESS {

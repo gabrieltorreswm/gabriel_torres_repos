@@ -1,4 +1,5 @@
 import { Request, Response, response } from "express";
+import { Repository } from "../entities/Repository.entity";
 import { Mock} from "../entities/types";
 import RepositoryServices, { RepositoryCreate, RepositoryQuery } from "../services/RepositoriesServices";
 import { BuilderRepository } from "../utils/BuilderRepository";
@@ -31,8 +32,12 @@ const getRepositoryByTribe = async (req:Request,res:Response,repositoryServices:
 
         const query:RepositoryQuery = { id: Number(idTribe), state , coverage:Number(coverage) , year}
             
-        const repository = await repositoryServices.getRepositoryByTribe(query)
+        const repository:Repository[] = await repositoryServices.getRepositoryByTribe(query)
+        
         console.log(repository)
+        if(repository.length == 0)
+            throw new ApiError(ERROR.E004);
+            
         const builerRepository = new BuilderRepository(repository,tribe)
         return res.json(builerRepository.getResponse())
 
@@ -40,7 +45,7 @@ const getRepositoryByTribe = async (req:Request,res:Response,repositoryServices:
     } catch (error) {
         console.log(error)
         if(error instanceof ApiError){
-            return res.json( 
+            return res.status(400).json( 
                 { 
                     message: error.getMessage()
                 }
