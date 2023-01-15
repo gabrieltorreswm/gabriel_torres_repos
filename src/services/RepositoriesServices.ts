@@ -23,12 +23,29 @@ export default class RepositoryServices {
 
     async getRepositoryByTribe(params:RepositoryQuery):Promise<Repository[]>{
         console.log(params)
-       return await Repository
+
+        const startDate = new Date(params.year)
+        startDate.setMonth(1)
+        startDate.setDate(1)
+
+
+        const endDate = new Date(params.year)
+        endDate.setFullYear(endDate.getFullYear() + 1)
+        endDate.setMonth(11)
+
+        return await Repository
                                     .createQueryBuilder('repository')
                                     .leftJoinAndSelect('repository.metrics','metrics')
                                     .leftJoinAndSelect('repository.id_tribu','tribe')
-                                    .where("repository.id = :id ", { id: params.id } )
-                                    .where("repository.id_tribu = :id AND state = :state  AND metrics.coverega >= :coverage", { id: params.id , state:params.state , coverage:params.coverage} )
+                                    .where("repository.id = :id", { id: params.id } )
+                                    .where("repository.id_tribu = :id AND state = :state  AND metrics.coverega >= :coverage AND create_time BETWEEN :startDate AND :endDate", 
+                                     { 
+                                            id: params.id , 
+                                            state:params.state , 
+                                            coverage:params.coverage,
+                                            startDate,
+                                            endDate
+                                        } )
                                     .getMany()                   
     }
 
@@ -69,6 +86,7 @@ export default class RepositoryServices {
                             repository.state = params.state
                             repository.status = params.status
                             repository.id_tribu = tribe
+                            repository.create_time = new Date
 
         return await repository.save()
     }
@@ -78,7 +96,8 @@ export default class RepositoryServices {
 export interface RepositoryQuery {
     id?:number
     state?:string
-    coverage?:number
+    coverage?:number,
+    year:string
 }
 
 export interface RepositoryCreate{

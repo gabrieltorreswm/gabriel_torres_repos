@@ -22,14 +22,14 @@ const getRepositoryByTribe = async (req:Request,res:Response,repositoryServices:
 
    
     try {
-        const { idTribe , state, coverage } = req.params
+        const { idTribe , state, coverage , year} = req.params
         
         const { isExistTribe, tribe } = await repositoryServices.getTribeById(Number(idTribe))
         
         if(!isExistTribe)
             throw new ApiError(ERROR.E001);
 
-        const query:RepositoryQuery = { id: Number(idTribe), state , coverage:Number(coverage) }
+        const query:RepositoryQuery = { id: Number(idTribe), state , coverage:Number(coverage) , year}
             
         const repository = await repositoryServices.getRepositoryByTribe(query)
         console.log(repository)

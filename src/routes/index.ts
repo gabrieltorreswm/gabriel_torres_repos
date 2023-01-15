@@ -11,7 +11,7 @@ const repositoryServices = new RepositoryServices()
 
 // Repositories resources
 router.get('/repositores', (req,res)=> gelAllRepositories(req,res,repositoryServices))
-router.get('/repositores/:idTribe/:state/:coverage', (req,res) => getRepositoryByTribe(req,res,repositoryServices))
+router.get('/repositores/:idTribe/:state/:coverage/:year', (req,res) => getRepositoryByTribe(req,res,repositoryServices))
 router.post('/repositores',(req,res) =>createRepository(req,res,repositoryServices))
 //Organization resources
 router.post ('/organizations/',createOrg)

@@ -19,7 +19,7 @@ export class Repository extends BaseEntity{
     state:string
 
     @Column({type:'timestamp', nullable:true})
-    create_time:string
+    create_time:Date
 
     @Column()
     status:string
