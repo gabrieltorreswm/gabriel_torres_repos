@@ -22,7 +22,6 @@ export default class RepositoryServices {
     }
 
     async getRepositoryByTribe(params:RepositoryQuery):Promise<Repository[]>{
-        console.log(params)
 
         const startDate = new Date(params.year)
         startDate.setMonth(1)
@@ -48,6 +47,8 @@ export default class RepositoryServices {
                                         } )
                                     .getMany()                   
     }
+
+    
 
     async getRepository(params:Mock):Promise<any>{
 

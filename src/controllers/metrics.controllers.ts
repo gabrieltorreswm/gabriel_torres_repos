@@ -2,8 +2,9 @@ import { Router, Request, Response } from "express";
 import { Metrics } from "../entities/Metrics.entity";
 import { Repository } from "../entities/Repository.entity";
 import { Tribe } from "../entities/Tribe.entity";
-import RepositoryServices from "../services/RepositoriesServices";
-import { ERROR, SUCCESS } from "../utils/Errors";
+import { MetricsServices } from "../services/MetricsServices";
+import RepositoryServices, { RepositoryQuery } from "../services/RepositoriesServices";
+import { ApiError, ERROR, SUCCESS } from "../utils/Errors";
 
 const createMetrics = async (req:Request,res:Response,next:CallableFunction) =>{
 
@@ -41,56 +42,23 @@ const createMetrics = async (req:Request,res:Response,next:CallableFunction) =>{
     }
 }
 
-const getMetricsByTribe = async (req:Request,res:Response,next:CallableFunction) =>{
+const generateCSV = async (req:Request,res:Response,metricsServices:MetricsServices,repositoryServices:RepositoryServices) =>{
 
     try {
-        const { id } = req.params
-
-        const repositoryServices = new RepositoryServices()
-        const { isExistTribe, tribe } = await repositoryServices.getTribeById(Number(id))
+        const { idTribe , state, coverage , year} = req.params
+        
+        const { isExistTribe, tribe } = await repositoryServices.getTribeById(Number(idTribe))
         
         if(!isExistTribe)
-            throw new Error(ERROR.E003);
-        
+            throw new ApiError(ERROR.E001);
 
-        const repository = await Repository
-                                .createQueryBuilder('repository')
-                                .leftJoinAndSelect('repository.metrics','metrics')
-                                .leftJoinAndSelect('repository.id_tribu','tribe')
-                                .where("repository.id = :id", { id: tribe?.id } )
-                                .where("repository.id_tribu = :id", { id: tribe?.id } )
-                                .getMany()
+        const query:RepositoryQuery = { id: Number(idTribe), state , coverage:Number(coverage) , year}
+            
+        const repository:Repository[] = await metricsServices.getMetricsByRepository(query)
+        
 
         return res.json(repository)
-    } catch (error) {
-        console.log(error)
-        res.json({
-            status:402,
-            message:ERROR.E002
-        })
-    }
-}
 
-const generateCSV = async (req:Request,res:Response,next:CallableFunction) =>{
-
-    try {
-        const { id } = req.params
-
-        const tribe = await Tribe.findOneBy({id: Number(id)})
-        
-        if(!tribe)
-            throw new Error("I dont found tribe");
-        
-
-        const repository = await Repository
-                                .createQueryBuilder('repository')
-                                .leftJoinAndSelect('repository.metrics','metrics')
-                                .leftJoinAndSelect('repository.id_tribu','tribe')
-                                .where("repository.id = :id", { id: tribe.id } )
-                                .where("repository.id_tribu = :id", { id: tribe.id } )
-                                .getMany()
-
-        return res.json(repository)
     } catch (error) {
         console.log(error)
         res.json({
@@ -102,6 +70,5 @@ const generateCSV = async (req:Request,res:Response,next:CallableFunction) =>{
 
 export {
     createMetrics,
-    getMetricsByTribe,
     generateCSV
 }

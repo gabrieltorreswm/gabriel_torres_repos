@@ -1,13 +1,15 @@
 import { Router, Request, Response } from "express";
-import { createMetrics ,getMetricsByTribe} from "../controllers/metrics.controllers";
-import { createOrg, deleteOrg, editOrg, getOrg } from "../controllers/organizations.controllers";
+import { createMetrics , generateCSV} from "../controllers/metrics.controllers";
+import { createOrg, deleteOrg, getOrg } from "../controllers/organizations.controllers";
 import { createRepository, gelAllRepositories, getRepositoryByTribe } from "../controllers/repositories.controller";
 import { getInfo } from "../controllers/tribe.controllers";
+import { MetricsServices } from "../services/MetricsServices";
 import RepositoryServices from "../services/RepositoriesServices";
 
 
 const router = Router()
 const repositoryServices = new RepositoryServices()
+const metricsServices = new MetricsServices(repositoryServices)
 
 // Repositories resources
 router.get('/repositores', (req,res)=> gelAllRepositories(req,res,repositoryServices))
@@ -24,8 +26,7 @@ router.get ('/tribe/:id', getInfo)
 
 // metrics 
 router.post('/metrics',createMetrics)
-router.get('/metrics/:id',getMetricsByTribe)
-router.get('/metrics/csv/:idTribu',getMetricsByTribe)
+router.get('/metrics/csv/:idTribe/:state/:coverage/:year',(req,res) => generateCSV(req,res,metricsServices,repositoryServices))
 
 
 export default router
