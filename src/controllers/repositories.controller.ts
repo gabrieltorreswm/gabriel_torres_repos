@@ -45,7 +45,7 @@ const getRepositoryByTribe = async (req:Request,res:Response,repositoryServices:
     } catch (error) {
         console.log(error)
         if(error instanceof ApiError){
-            return res.status(400).json( 
+            return res.status(401).json( 
                 { 
                     message: error.getMessage()
                 }

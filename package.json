@@ -22,10 +22,14 @@
   "homepage": "https://github.com/gabrieltorreswm/gabriel_torres_repos#readme",
   "dependencies": {
     "@types/chai-as-promised": "^7.1.5",
+    "@types/json2csv": "^5.0.3",
     "chai-as-promised": "^7.1.1",
     "cors": "^2.8.5",
+    "csv-generate": "^4.2.1",
+    "csv-writer": "^1.6.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "json2csv": "^5.0.7",
     "pg": "^8.8.0",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.3.11"

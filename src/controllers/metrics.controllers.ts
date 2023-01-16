@@ -1,10 +1,13 @@
 import { Router, Request, Response } from "express";
+import path from "path";
 import { Metrics } from "../entities/Metrics.entity";
 import { Repository } from "../entities/Repository.entity";
 import { Tribe } from "../entities/Tribe.entity";
 import { MetricsServices } from "../services/MetricsServices";
 import RepositoryServices, { RepositoryQuery } from "../services/RepositoriesServices";
+import { BuilderRepository } from "../utils/BuilderRepository";
 import { ApiError, ERROR, SUCCESS } from "../utils/Errors";
+import { GenerateCsv } from "../utils/GenerateCsv";
 
 const createMetrics = async (req:Request,res:Response,next:CallableFunction) =>{
 
@@ -46,9 +49,8 @@ const generateCSV = async (req:Request,res:Response,metricsServices:MetricsServi
 
     try {
         const { idTribe , state, coverage , year} = req.params
-        
         const { isExistTribe, tribe } = await repositoryServices.getTribeById(Number(idTribe))
-        
+        const generateCSV = new GenerateCsv()
         if(!isExistTribe)
             throw new ApiError(ERROR.E001);
 
@@ -56,8 +58,31 @@ const generateCSV = async (req:Request,res:Response,metricsServices:MetricsServi
             
         const repository:Repository[] = await metricsServices.getMetricsByRepository(query)
         
+        if(repository.length == 0)
+            throw new ApiError(ERROR.E004);
+        
+        const builerRepository = new BuilderRepository(repository,tribe)
+       
+        
+        const header = [
+            { id: 'id', title: 'Id' },
+            { id: 'name', title: 'Name' },
+            { id: 'tribe', title: 'Tribe' },
+            { id: 'coverage', title: 'Coverage' },
+            { id: 'codeSmells', title: 'CodeSmells' },
+            { id: 'vulnerabilities', title: 'Vulnerabilities' },
+            { id: 'hotspots', title: 'Hotspots' },
+            { id: 'verificationState', title: 'VerificationState' },
+            { id: 'state', title: 'State' }
+        ]
 
-        return res.json(repository)
+        console.log(builerRepository)
+        const csv = await generateCSV.parse(builerRepository)
+        
+        return res.set({
+            "Content-Type": "text/csv",
+            "Content-Disposition": `attachment; filename="reports${Date()}.csv"`,
+          }).json(csv)
 
     } catch (error) {
         console.log(error)
